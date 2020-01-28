@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang = "es">
+<head>
+	<title>Blog CRUD </title>
+	<meta charset="UTF-8" />
+	<link href="./css/index.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<header>
+		<img src="./assets/blog.png" alt="blog" />
+		<h1>Blog</h1>
+	</header>
+	<main>
+		<section id="crud" id="agregarC">
+			<div class="seccionBlog">
+				<h2>Agregar</h2>
+				<form class="estilos">
+					<fieldset>
+						<p>
+							<label for="titulo">Titulo:</label>
+							<input type= "text" id="titulo" />	
+						</p>
+						<p>
+							<label for="autorA">Autor: </label>
+							<input type= "text" id="autorA" />
+						</p>
+
+						<p>
+							<label for="contenido">Contenido:</label>
+						</p>
+						<textarea cols="33" rows="4" id="comentario"></textarea>
+						<button type="submit" id="agregarB"> Agregar </button>
+						<p id="agregarError"></p>
+					</fieldset>
+				</form>
+			</div>
+
+			<div class="seccionBlog">
+				<h2>Actualizar</h2>
+				<form class="estilos">
+					<fieldset>
+						<p>
+							<label for="id">Id:</label>
+							<input type= "text" id="id"/>	
+						</p>
+						<p>
+							<label for="tituloAct">Titulo:</label>
+							<input type= "text" id="tituloAct" />	
+						</p>
+
+						<p>
+							<label for="autorAct">Autor: </label>
+							<input type= "text" id="autorAct"/>
+						</p>
+						<p>
+							<label for="contenido">Contenido:</label>
+						</p>
+						<textarea cols="33" rows="4" id="comentarioAct"></textarea>
+						<button type="submit" id=actualizarB> Actualizar </button>
+						<p id="actualizarError"></p>
+					</fieldset>
+				</form>
+			</div>
+
+			<div class="seccionBlog" id="eliminarC" >
+				<h2>Eliminar</h2>
+				<form class="estilos">
+					<fieldset>
+						<label for="idEliminar">Id:</label>
+						<input type= "text" id="idEliminar" />	
+						<button type="submit" id=eliminarB> Eliminar </button>
+						<p id="eliminarError"></p>
+					</fieldset>
+				</form>
+			</div>
+
+			<div class="seccionBlog" id="busqueda">
+				<h2>Búsqueda por autor</h2>
+				<form>
+					<fieldset>
+						<label for="autor">Autor:</label>
+						<input type= "text" id="autor" />	
+						<button type="submit" id=buscarB> Buscar </button>
+						<p id="autorError"></p>
+					</fieldset>
+				</form>
+			</div>
+		</section>
+
+		<section id="panelComentarios">
+			<div id="comentariosRecientes">
+				<h2>Comentarios recientes</h2>
+	            	<form>
+	            		<ol id="comentarios">
+
+	            		</ol>
+	           		</form>
+           	</div>
+
+           	<div id="comentariosPorAutor">
+				<h2>Comentarios por autor</h2>
+	            	<form>
+	            		<ol id="comentariosAutor">
+
+	            		</ol>
+	           		</form>
+           	</div>
+		</section>
+		
+
+	</main>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="./js/index.js" type="text/javascript"></script>		
+</body>
+</html>

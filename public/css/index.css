@@ -1,0 +1,121 @@
+*{
+	box-sizing: border-box;
+}
+
+header{
+	display: flex;
+	flex-direction: row;
+	margin: 0 10px 15px 5px;
+	border: 3px solid #59FFB3;
+	padding: 5px 0;
+}
+
+body{
+	font-family: Verdana, sans-serif;
+	font-size: 14px;
+}
+
+header img{
+	width: 162px;
+	margin-left: 10px;
+}
+
+header h1{
+	text-align: center;
+	font-size: 50px;
+	margin: 0 auto;
+}
+
+h1{
+	align-self: center;
+	justify-content: center;
+	color: #605F5E;
+}
+
+main{
+	display: flex;
+	flex-direction: row;
+}
+
+fieldset{
+	border: none;
+}
+
+textarea{
+	margin-bottom: 5px;
+}
+
+button{
+	padding: 8px 10px;
+	color: white;
+	border-radius: 5px;
+}
+
+button:hover{
+	cursor: pointer;
+}
+
+#panelComentarios{
+	display: flex;
+	flex-direction: column;
+	width: 74%;
+	margin-left: 30px;
+	margin-right: 10px;
+	border: 3px solid #08B2E3;
+}
+
+#panelComentarios h2{
+	margin-left: 300px;
+}
+#crud{
+	width: 26%;
+	margin-left: 5px;
+	border: 3px solid #81BD41;
+}
+
+.seccionBlog h2{
+	margin-left: 10px;
+}
+
+.estilos{
+	border-bottom: 2px dashed black;
+}
+
+#comentariosPorAutor{
+	border-top: 1px dashed black;
+}
+#id{
+	margin-left: 25px;
+}
+
+#eliminarB{
+	background-color: #DF0B0B;
+}
+
+#agregarB{
+	background-color: #05BE24;
+}
+
+#actualizarB{
+	background-color: #004683;
+}
+
+#buscarB{
+	background-color: #009FB7;
+}
+
+#busqueda{
+	padding: 10px 0 18px;
+}
+
+#eliminarC{
+	padding-top: 10px;
+}
+
+ol{
+	margin-left: 15px;
+}
+
+li{
+	margin-bottom: 25px;
+}
