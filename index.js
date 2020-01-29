@@ -4,6 +4,7 @@ let bodyParser = require("body-parser");
 let mongoose = require("mongoose");
 let uuid = require('uuid/v4');
 let {ComentariosList} = require("./model");
+let {DATABASE_URL, PORT} = require("./config");
 
 let app = express();
 let jsonParser = bodyParser.json();
@@ -219,6 +220,6 @@ function closeServer(){
  		});
 }
 
-runServer(8080, "mongodb://localhost/Blog");
+runServer(PORT, DATABASE_URL);
 
 module.exports={app, runServer, closeServer}
