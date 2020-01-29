@@ -101,7 +101,8 @@ app.delete("/blog-api/remover-comentario/:id", (req,res)=>{
 		.then(comentariosList=>{
 			if(comentariosList)
 			{
-				return res.status(200).send();
+				console.log(comentariosList);
+				return res.status(200).json(comentariosList);
 			}
 			else
 			{
