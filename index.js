@@ -1,7 +1,9 @@
 let express = require("express");
 let morgan = require("morgan");
 let bodyParser = require("body-parser");
+let mongoose = require("mongoose");
 let uuid = require('uuid/v4');
+let {ComentariosList} = require("./model");
 
 let app = express();
 let jsonParser = bodyParser.json();
@@ -9,26 +11,17 @@ let jsonParser = bodyParser.json();
 app.use(express.static("public"));
 app.use(morgan("dev"));
 
-let comentario = [
-	{
-		id : uuid(),
-    	titulo : "1er comentario",
-    	contenido : "Este es el primer comentario del blog",
-    	autor : "Ana",
-    	fecha : new Date("January 17, 2020")
-
-    },
-	{
-		id : uuid(),
-    	titulo : "2ndo comentario",
-    	contenido : "Este es el segundo comentario del blog",
-    	autor : "Pedro",
-    	fecha : new Date("January 22, 2020")
-	}
-];
 
 app.get("/blog-api/comentarios", (req, res)=>{
-	return res.status(200).json(comentario);
+	ComentariosList.getAll()
+		.then(comentariosList=>{
+			return res.status(200).json(comentariosList);
+		})
+		.catch(error=>{
+			console.log(error);
+			res.statusMessage="Hubo un error de conexión con la BD.";
+			return res.status(500).send();
+		});
 });
 
 app.get("/blog-api/comentarios-por-autor", (req, res)=>{
@@ -43,21 +36,26 @@ app.get("/blog-api/comentarios-por-autor", (req, res)=>{
 		});
 	}
 	
-	let resultado = comentario.filter((elemento)=>{
-		if(elemento.autor == autor )
-			return elemento;
-	});
-
-	if(resultado.length >0){
-		return res.status(200).json(resultado);
-	}
-	else{
-		res.statusMessage = "No se encontro comentario con el autor proporcionado";
-		return res.status(404).json({
-			message : "No se encontro comentario con el autor proporcionado",
-			status : 404
-		});
-	}
+	ComentariosList.getByAutor(autor)
+		.then(comentariosList=>{
+			if(comentariosList!=""){
+				console.log(comentariosList);
+				return res.status(200).send(comentariosList);
+			}
+			else 
+            {
+                res.statusMessage = "No se encontro comentario con el autor proporcionado";
+                return res.status(404).json({
+                    message: "No se encontro comentario con el autor proporcionado", 
+                    status: 404
+                });
+            }
+		})
+		.catch(error=>{
+			console.log(error);
+			res.statusMessage="Hubo un error de conexión con la BD.";
+			return res.status(500).send();
+		})
 
 });
 
@@ -83,30 +81,41 @@ app.post("/blog-api/nuevo-comentario", jsonParser, (req, res)=>{
 		fecha : new Date()
 	};
 
-	comentario.push(nuevoComentario);
-	 return res.status(201).json(nuevoComentario);
+	ComentariosList.post(nuevoComentario)
+		.then(comentariosList=>{
+			return res.status(201).json(comentariosList);
+		})
+		.catch(error=>{
+			console.log(error);
+			res.statusMessage="Hubo un error de conexión con la BD.";
+			return res.status(500).send();
+		});
+	
 });
 
 app.delete("/blog-api/remover-comentario/:id", (req,res)=>{
 	let id = req.params.id;
 
-	for(let i=0; i<comentario.length; i++)
-	{
-		if(id==comentario[i].id)
-		{
-			comentario.splice(i,1);
-			return res.status(200).json({
-            	message:"Mensaje eliminado con exito", 
-            	status:200
-            });
-		}
-	}
-
-	res.statusMessage = "Id no encontrado en la lista";
-	return res.status(404).json({
-        message : "Id no encontrado en la lista",
-        status : 404
-    });
+	ComentariosList.delete(id)
+		.then(comentariosList=>{
+			if(comentariosList)
+			{
+				return res.status(200).send();
+			}
+			else
+			{
+				res.statusMessage = "Id no encontrado en la lista";
+				return res.status(404).json({
+       				message : "Id no encontrado en la lista",
+        			status : 404
+        		});
+			}
+		})
+		.catch(error=>{
+			console.log(error);
+			res.statusMessage="Hubo un error con la conexión con la BD.";
+			return res.status(500).send();
+		})
 });
 
 app.put("/blog-api/actualizar-comentario/:id", jsonParser, (req, res)=>{
@@ -142,24 +151,74 @@ app.put("/blog-api/actualizar-comentario/:id", jsonParser, (req, res)=>{
 		});
 	}
 
-	for(let i=0; i<comentario.length; i++)
-	{
-		if(comentario[i].id == idParam)
-		{
-			if(titulo)
-				comentario[i].titulo = titulo;
+	let commentToUpdate = { }
+   commentToUpdate.id=idParam;
 
-			if(contenido)
-				comentario[i].contenido = contenido;
+   if (titulo)
+   {
+        commentToUpdate.titulo= titulo;
+   } 
 
-			if(autor)
-				comentario[i].autor = autor;
-			
-			return res.status(202).json(comentario[i]);
-		}
-	}
+   if (contenido)
+   {
+        commentToUpdate.contenido = contenido;
+   }
+
+   if (autor)
+   {
+        commentToUpdate.autor = autor;
+   }
+
+   ComentariosList.put(commentToUpdate)
+   	.then(comentariosList=>{
+   		return res.status(202).json(comentariosList);
+   	})
+   	.catch(error=>{
+   		console.log(error);
+   		res.statusMessage ="Hubo un error con la conexion de la BD.";
+   		return res.status(500).send();
+   	})
+  
 });
 
-app.listen("8080", () => {
-    console.log("Servidor corriendo en puerto 8080");
-});
+let server;
+function runServer(port, databaseUrl){
+ 	return new Promise( (resolve, reject ) => {
+ 		mongoose.connect(databaseUrl, response => {
+ 			if ( response ){
+ 				return reject(response);
+ 			}
+ 			else{
+ 				server = app.listen(port, () => {
+ 					console.log( "Servidor corriendo en puerto " + port );
+					 resolve();
+				})
+ 				.on( 'error', err => {
+ 					mongoose.disconnect();
+ 					return reject(err);
+ 				})
+ 			}
+ 		});
+ 	});
+}
+
+function closeServer(){
+	return mongoose.disconnect()
+		.then(() => {
+ 			return new Promise((resolve, reject) => {
+ 				console.log('Closing the server');
+				server.close( err => {
+					if (err){
+						return reject(err);
+	 				}
+					else{
+ 						resolve();
+					}
+ 				});
+ 			});
+ 		});
+}
+
+runServer(8080, "mongodb://localhost/Blog");
+
+module.exports={app, runServer, closeServer}
