@@ -121,9 +121,9 @@ function eliminar()
 		event.preventDefault();
 
 		let id = $("#idEliminar").val();
-		let url = "/blog-api/remover-comentario/";
+		let url = `/blog-api/remover-comentario/${id}`;
 		$.ajax({
-			url : url + id,
+			url : url ,
 			method : "DELETE",
 			dataType : "json",
 			contentType : "application/json",
